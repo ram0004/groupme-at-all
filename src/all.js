@@ -199,7 +199,7 @@ class AllBot {
     );
 
     // Mention @all command
-    this.robot.hear(/(.*)@all(.*)/i, res => this.respondToAtAll(res));
+    this.robot.hear(/(.*)@all (.*)/i, res => this.respondToAtAll(res));
   }
 }
 
