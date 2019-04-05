@@ -145,7 +145,7 @@ class AllBot {
       bot_id,
       attachments: [{ loci: [], type: "mentions", user_ids: [] }]
     };
-  console.log(bot_id);
+  console.log("text:",text,"bot_id",bot_id);
     // Add "mention" for each user
     const users = this.robot.brain.users();
     Object.keys(users).map((userID, index) => {
