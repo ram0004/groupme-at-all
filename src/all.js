@@ -140,7 +140,7 @@ class AllBot {
     //   text = "Please check the GroupMe, everyone.";
 
     // The message for use in GroupMe API
-    var newText = text.replace("’","'");
+    var newText = " ";
     const message = {
       newText,
       bot_id,
