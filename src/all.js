@@ -140,6 +140,7 @@ class AllBot {
     //   text = "Please check the GroupMe, everyone.";
 
     // The message for use in GroupMe API
+    text = decodeURIComponent(escape(text));
     const message = {
       text,
       bot_id,
