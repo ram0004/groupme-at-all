@@ -180,6 +180,113 @@ class AllBot {
     });
     req.end(json);
   }
+  
+  respondToAtGirls(res) {
+    // Select the longer of the two options.
+    // TODO: Maybe combine them?
+    var text =
+      res.match[0].length > res.match[1].length ? res.match[0] : res.match[1];
+
+    // Default text if not long enough
+    // TODO: Is this necessary? Can't we tag everyone on a 1 character message?
+    // if (text.length < users.length)
+    //   text = "Please check the GroupMe, everyone.";
+    text = "Please check the GroupMe, everyone."
+    // The message for use in GroupMe API
+    const message = {
+      text,
+      bot_id,
+      attachments: [{ loci: [], type: "mentions", user_ids: [] }]
+    };
+  console.log("text:",text,"bot_id",bot_id);
+    // Add "mention" for each user
+    const users = this.robot.brain.users();
+    Object.keys(users).map((userID, index) => {
+      // Skip blacklisted users
+      if (this.blacklist.indexOf(userID) !== -1) return;
+
+      // TODO: Would [i, i] work?
+      message.attachments[0].loci.push([index, index + 1]);
+      message.attachments[0].user_ids.push(userID);
+    });
+
+    // Send the request
+    const json = JSON.stringify(message);
+    const groupmeAPIOptions = {
+      agent: false,
+      host: "api.groupme.com",
+      path: "/v3/bots/post",
+      port: 443,
+      method: "POST",
+      headers: {
+        "Content-Length": json.length,
+        "Content-Type": "application/json",
+        "X-Access-Token": token
+      }
+    };
+    const req = https.request(groupmeAPIOptions, response => {
+      let data = "";
+      response.on("data", chunk => (data += chunk));
+      response.on("end", () =>
+        console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
+      );
+    });
+    req.end(json);
+  }
+  
+  respondToAtGuys(res) {
+    // Select the longer of the two options.
+    // TODO: Maybe combine them?
+    var text =
+      res.match[0].length > res.match[1].length ? res.match[0] : res.match[1];
+
+    // Default text if not long enough
+    // TODO: Is this necessary? Can't we tag everyone on a 1 character message?
+    // if (text.length < users.length)
+    //   text = "Please check the GroupMe, everyone.";
+    text = "Please check the GroupMe, everyone."
+    // The message for use in GroupMe API
+    const message = {
+      text,
+      bot_id,
+      attachments: [{ loci: [], type: "mentions", user_ids: [] }]
+    };
+  console.log("text:",text,"bot_id",bot_id);
+    // Add "mention" for each user
+    const users = this.robot.brain.users();
+    Object.keys(users).map((userID, index) => {
+      // Skip blacklisted users
+      if (this.blacklist.indexOf(userID) !== -1) return;
+
+      // TODO: Would [i, i] work?
+      message.attachments[0].loci.push([index, index + 1]);
+      message.attachments[0].user_ids.push(userID);
+    });
+
+    // Send the request
+    const json = JSON.stringify(message);
+    const groupmeAPIOptions = {
+      agent: false,
+      host: "api.groupme.com",
+      path: "/v3/bots/post",
+      port: 443,
+      method: "POST",
+      headers: {
+        "Content-Length": json.length,
+        "Content-Type": "application/json",
+        "X-Access-Token": token
+      }
+    };
+    const req = https.request(groupmeAPIOptions, response => {
+      let data = "";
+      response.on("data", chunk => (data += chunk));
+      response.on("end", () =>
+        console.log(`[GROUPME RESPONSE] ${response.statusCode} ${data}`)
+      );
+    });
+    req.end(json);
+  }
+
 
   // Defines the main logic of the bot
   run() {
@@ -197,6 +304,10 @@ class AllBot {
     this.robot.hear(/whitelist (.+)/i, res =>
       this.respondToWhitelist(res, res.match[1])
     );
+    
+    this.robot.hear(/(.*)@all (.*)/i,res => this.responToAtGirls(res));
+    
+    this.robot.hear(/(.*)@all (.*)/i,res => this.responToAtGirls(res));
 
     // Mention @all command
     this.robot.hear(/(.*)@all (.*)/i, res => this.respondToAtAll(res));
